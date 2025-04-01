@@ -40,4 +40,12 @@ const addCat = (cat) => {
   return {cat_id: newId};
 };
 
-export {listAllCats, findCatById, addCat};
+const removeCat = (id) => {
+  const cat = findCatById(id);
+
+  const index = catItems.indexOf(cat);
+  if (index != -1) catItems.splice(index, 1);
+  if (cat) return true;
+  else return false;
+};
+export {listAllCats, findCatById, addCat, removeCat};

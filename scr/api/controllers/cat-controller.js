@@ -1,4 +1,9 @@
-import {addCat, findCatById, listAllCats} from '../models/cat-model.js';
+import {
+  addCat,
+  findCatById,
+  listAllCats,
+  removeCat,
+} from '../models/cat-model.js';
 
 const getCat = (req, res) => {
   res.json(listAllCats());
@@ -25,19 +30,19 @@ const postCat = (req, res) => {
 
 const putCat = (req, res) => {
   const cat = findCatById(req.params.id);
-
-  cat.birthdate = req.body.birthdate;
-  cat.cat_name = req.body.cat_name;
-
-  cat.filename = req.body.filename;
-  cat.owner = req.body.owner;
-  cat.weight = req.body.weight;
-  res.sendStatus(200);
+  Object.assign(cat, req.body);
+  res.status(200);
+  res.json({message: 'Cat updated.', cat});
 };
 
 const deleteCat = (req, res) => {
-  // not implemented in this example, this is future homework
-  res.sendStatus(200);
+  if (removeCat(req.params.id)) {
+    res.status(200);
+    res.json({message: 'Cat deleted.'});
+  } else {
+    res.status(204);
+    res.json({message: `Error no cat found with id`});
+  }
 };
 
 export {getCat, getCatById, postCat, putCat, deleteCat};
