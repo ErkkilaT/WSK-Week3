@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-
+//forgot to branch so branchin now so teacher can see
 const createThumbnail = async (req, res, next) => {
   if (!req.file) {
     next();
