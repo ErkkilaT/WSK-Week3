@@ -7,7 +7,6 @@ import {
   deleteUser,
 } from '../controllers/user-controller.js';
 
-const catRouter = express.Router();
 const userRouter = express.Router();
 
 userRouter.route('/').get(getUser).post(postUser);
