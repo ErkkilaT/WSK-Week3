@@ -19,6 +19,17 @@ const findCatById = async (id) => {
   }
   return rows[0];
 };
+const findCatByOwnerId = async (id) => {
+  const [rows] = await promisePool.execute(
+    'SELECT * FROM wsk_cats WHERE owner = ?',
+    [id]
+  );
+  console.log('rows', rows);
+  if (rows.length == 0) {
+    return false;
+  }
+  return rows;
+};
 
 const addCat = async (cat) => {
   const {cat_name, weight, owner, filename, birthdate} = cat;
@@ -57,4 +68,11 @@ const modifyCat = async (cat, id) => {
   return {message: 'success'};
 };
 
-export {listAllCats, findCatById, addCat, removeCat, modifyCat};
+export {
+  listAllCats,
+  findCatById,
+  findCatByOwnerId,
+  addCat,
+  removeCat,
+  modifyCat,
+};

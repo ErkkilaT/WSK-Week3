@@ -31,15 +31,27 @@ const addUser = async (user) => {
 };
 
 const removeUser = async (id) => {
-  const [rows] = await promisePool.execute(
-    'DELETE FROM wsk_users WHERE user_id = ?',
-    [id]
-  );
-  console.log('rows', rows);
-  if (rows.affectedRows == 0) {
-    return false;
+  const connection = await promisePool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+    await connection.execute('DELETE FROM wsk_cats WHERE owner = ?', [id]);
+    const sql = connection.format('DELETE FROM wsk_users WHERE user_id = ?', [
+      id,
+    ]);
+
+    const [result] = await connection.execute(sql);
+    if (result.affectedRows == 0) {
+      return {message: 'User not deleted'};
+    }
+    await connection.commit();
+  } catch (error) {
+    await connection.rollback();
+    console.error('error', error.message);
+    return {message: error.message};
+  } finally {
+    connection.release();
   }
-  return {message: 'success'};
 };
 const modifyUser = async (user, id) => {
   const sql = promisePool.format(`UPDATE wsk_users SET ? WHERE user_id = ?`, [

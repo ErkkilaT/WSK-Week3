@@ -1,6 +1,7 @@
 import {
   addCat,
   findCatById,
+  findCatByOwnerId,
   listAllCats,
   removeCat,
   modifyCat,
@@ -12,6 +13,14 @@ const getCat = async (req, res) => {
 
 const getCatById = async (req, res) => {
   const cat = await findCatById(req.params.id);
+  if (cat) {
+    res.json(cat);
+  } else {
+    res.sendStatus(404);
+  }
+};
+const getCatByOwnerId = async (req, res) => {
+  const cat = await findCatByOwnerId(req.params.id);
   if (cat) {
     res.json(cat);
   } else {
@@ -53,4 +62,4 @@ const deleteCat = async (req, res) => {
   }
 };
 
-export {getCat, getCatById, postCat, putCat, deleteCat};
+export {getCat, getCatById, postCat, putCat, deleteCat, getCatByOwnerId};
