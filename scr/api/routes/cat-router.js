@@ -1,5 +1,5 @@
 import express from 'express';
-import multer from 'multer';
+
 import {
   getCat,
   getCatById,
@@ -9,16 +9,31 @@ import {
   getCatByOwnerId,
 } from '../controllers/cat-controller.js';
 import {createThumbnail} from '../../middlewares.js';
-import {authenticateToken} from '../../middlewares.js';
+import {
+  authenticateToken,
+  validationErrors,
+  upload,
+} from '../../middlewares.js';
+import {body} from 'express-validator';
 
 const catRouter = express.Router();
 
-const upload = multer({dest: 'uploads/'});
+//const upload = multer({dest: 'uploads/'});
 
 catRouter
   .route('/')
   .get(getCat)
-  .post(authenticateToken, upload.single('file'), createThumbnail, postCat);
+  .post(
+    authenticateToken,
+    upload.single('file'),
+    body('cat_name').trim().isLength({min: 3, max: 50}),
+    body('weight').trim().isNumeric(),
+    body('owner').trim().isInt(),
+    body('birthdate').trim().isDate(),
+    validationErrors,
+    createThumbnail,
+    postCat
+  );
 
 catRouter
   .route('/:id')

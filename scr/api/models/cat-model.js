@@ -4,7 +4,7 @@ const listAllCats = async () => {
   const [rows] = await promisePool.execute(
     'SELECT wsk_cats.*, wsk_users.name as "owner_name" FROM wsk_cats JOIN wsk_users ON wsk_cats.owner = wsk_users.user_id'
   );
-  console.log('rows', rows);
+
   return rows;
 };
 
@@ -13,7 +13,7 @@ const findCatById = async (id) => {
     'SELECT * FROM wsk_cats WHERE cat_id = ?',
     [id]
   );
-  console.log('rows', rows);
+
   if (rows.length == 0) {
     return false;
   }
@@ -24,7 +24,7 @@ const findCatByOwnerId = async (id) => {
     'SELECT * FROM wsk_cats WHERE owner = ?',
     [id]
   );
-  console.log('rows', rows);
+
   if (rows.length == 0) {
     return false;
   }
@@ -36,7 +36,7 @@ const addCat = async (cat) => {
   const sql = `INSERT INTO wsk_cats (cat_name, weight, owner, filename, birthdate) VALUES (?, ?, ?, ?, ?)`;
   const params = [cat_name, weight, owner, filename, birthdate];
   const rows = await promisePool.execute(sql, params);
-  console.log('rows', rows);
+
   if (rows[0].affectedRows == 0) {
     return false;
   }
@@ -48,7 +48,7 @@ const removeCat = async (id) => {
     'DELETE FROM wsk_cats WHERE cat_id = ?',
     [id]
   );
-  console.log('rows', rows);
+
   if (rows.affectedRows == 0) {
     return false;
   }
@@ -61,7 +61,7 @@ const modifyCat = async (cat, id) => {
     id,
   ]);
   const rows = await promisePool.execute(sql);
-  console.log('rows', rows);
+
   if (rows[0].affectedRows == 0) {
     return false;
   }

@@ -2,7 +2,7 @@ import promisePool from '../../utils/database.js';
 
 const listAllUsers = async () => {
   const [rows] = await promisePool.execute('SELECT * FROM wsk_users');
-  console.log('rows', rows);
+
   return rows;
 };
 
@@ -11,7 +11,7 @@ const findUserById = async (id) => {
     'SELECT * FROM wsk_users WHERE user_id = ?',
     [id]
   );
-  console.log('rows', rows);
+
   if (rows.length == 0) {
     return false;
   }
@@ -22,7 +22,7 @@ const findUserByUsername = async (username) => {
     'SELECT * FROM wsk_users WHERE username = ?',
     [username]
   );
-  console.log('rows', rows);
+
   if (rows.length == 0) {
     return false;
   }
@@ -34,7 +34,7 @@ const addUser = async (user) => {
   const sql = `INSERT INTO wsk_users (name, password, username, email, role) VALUES (?, ?, ?, ?, ?)`;
   const params = [name, password, username, email, role];
   const rows = await promisePool.execute(sql, params);
-  console.log('rows', rows);
+
   if (rows[0].affectedRows == 0) {
     return false;
   }
@@ -70,7 +70,7 @@ const modifyUser = async (user, id) => {
     id,
   ]);
   const rows = await promisePool.execute(sql);
-  console.log('rows', rows);
+
   if (rows[0].affectedRows == 0) {
     return false;
   }

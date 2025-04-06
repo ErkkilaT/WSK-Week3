@@ -46,7 +46,6 @@ const postCat = async (req, res) => {
 };
 
 const putCat = async (req, res) => {
-  console.log(res.locals.user.role);
   if (
     res.locals.user.user_id == (await findCatById(req.params.id)).owner ||
     res.locals.user.role == 'admin'

@@ -1,7 +1,9 @@
 import sharp from 'sharp';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
-//forgot to branch so branchin now so teacher can see
+import {validationResult} from 'express-validator';
+import multer from 'multer';
+
 const createThumbnail = async (req, res, next) => {
   if (!req.file) {
     next();
@@ -30,4 +32,63 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
-export {createThumbnail, authenticateToken};
+const validationErrors = async (req, res, next) => {
+  console.log('got to validationErrors');
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const messages = errors
+      .array()
+      .map((error) => `${error.path}: ${error.msg}`)
+      .join(', ');
+    const error = new Error(messages);
+    error.status = 400;
+    next(error);
+    return;
+  }
+  next();
+};
+
+const upload = multer({
+  dest: 'uploads/',
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+  },
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype.startsWith('image/') ||
+      file.mimetype.startsWith('video/')
+    ) {
+      cb(null, true);
+    } else {
+      const error = new Error('Only images and videos are allowed!');
+      error.status = 400;
+      cb(null, false);
+    }
+  },
+});
+
+const notFoundHandler = (req, res, next) => {
+  const error = new Error(`Not Found - ${req.originalUrl}`);
+  error.status = 404;
+  next(error);
+};
+
+const errorHandler = (err, req, res, next) => {
+  res.status(err.status || 500);
+  res.json({
+    error: {
+      message: err.message,
+      status: err.status || 500,
+    },
+  });
+};
+
+export {
+  createThumbnail,
+  authenticateToken,
+  validationErrors,
+  upload,
+  notFoundHandler,
+  errorHandler,
+};
