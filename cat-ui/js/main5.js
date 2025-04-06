@@ -193,6 +193,7 @@ const getUsers = async () => {
 addForm.addEventListener('submit', async (evt) => {
   evt.preventDefault();
   const fd = new FormData(addForm);
+  fd.append('owner', user.user_id);
   const fetchOptions = {
     method: 'POST',
     headers: {
